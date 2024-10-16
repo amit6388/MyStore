@@ -15,8 +15,9 @@ const {
   deleteCart, 
   getSingleCart, 
  } = require('../controllers/user/UserController');
+ const {getOrderByUserId} =require('../controllers/admin/oderController')
 const img_upload = require('../multer/admin/fileupload') ;
-const { requireSignIn } = require('../middlewares/authMiddleware'); 
+const { requireSignIn } = require('../middlewares/authMiddleware'); //middleware for authentication 
 ///userCreate
 userRouter.route('/user-login').post(loginUser);
  userRouter.route('/user').post(createUser);
@@ -32,5 +33,6 @@ userRouter.route('/user/:_id').get(getSingleUser);
  userRouter.route('/add-to-cart/:_id').get(getSingleCart);
 //order Route
 userRouter.route('/order').post(createCart);
+userRouter.route('/order/:userId').post(getOrderByUserId);
 
 module.exports = userRouter; 

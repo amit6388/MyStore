@@ -87,7 +87,7 @@ const putOrder = async (req, res) => {
 
     const deleteOder=  async (req, res) => {
           try {
-            const deletedOrder = await OrderTable.findByIdAndDelete(req.params.id);
+            const deletedOrder = await OrderTable.findByIdAndDelete(req.params.id); 
         
             if (!deletedOrder) {
               return res.json({

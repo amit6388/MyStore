@@ -38,7 +38,7 @@ Router.get('/add-product/:_id',  getSingleProduct);
 Router.get('/add-product', getProduct);
 //order status
 Router.post('/order',   createOrder); 
-Router.put('/order/:_id', putOrder); 
+Router.put('/order/:_id', putOrder); //spectific id 
 Router.delete('/order/:_id', deleteOder); 
 Router.get('/order/:_id',  getOrderByUserId); //single user by id
 Router.get('/order', getOrders);
