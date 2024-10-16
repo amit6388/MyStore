@@ -1,5 +1,6 @@
 const userTable=require('../../models/user/index') ;
-const ContentSchema=require('../../models/admin/Product') ;
+const ProductTable=require('../../models/admin/Product') ;
+const addToCartTable=require('../../models/user/Cart')
  const jwt=require('jsonwebtoken');
 const loginUser=async(req,res,next)=>{
   try { 
@@ -250,10 +251,261 @@ const getSingleUser = async (req, res) => {
   }
 };
 
+///Add TO Cart 
+const createCart = async (req, res) => {
+  try {
+    const { productId, userId } = req.body;
+
+    console.log("Received productId:", productId);
+    console.log("Received userId:", userId);
+
+    // Basic validation for missing fields
+    if (!productId || !userId) {
+      return res.status(400).json({
+        code: 400,
+        message: "Missing required fields: productId or userId.",
+        error: true,
+        status: false,
+        data: [],
+      });
+    }
+
+    // Check if the cart already exists for the given userId and productId
+    const existingCart = await addToCartTable.findOne({ userId, productId });
+
+    if (existingCart) {
+      // If the entry already exists, send a conflict response
+      return res.status(409).json({
+        code: 409,
+        message: "Cart entry already exists for this user and product.",
+        error: true,
+        status: false,
+        data: [],
+      });
+    } else {
+      // If no duplicate is found, create a new cart entry
+      const newCart = new addToCartTable({ productId, userId });
+
+      await newCart.save(); // Save the new cart entry
+      console.log("Cart saved successfully");
+
+      // Success response
+      return res.status(201).json({
+        code: 201,
+        message: "Cart created successfully.",
+        error: false,
+        status: true,
+        data: newCart, // Include the cart data if necessary
+      });
+    }
+  } catch (err) {
+    console.error(err);
+
+    // Handle unexpected errors
+    return res.status(500).json({
+      code: 500,
+      message: "An internal server error occurred.",
+      error: true,
+      status: false,
+      data: [],
+    });
+  }
+};
+
+
+
+
+const putCart = async (req, res) => {
+  try {
+    const { productId, userId } = req.body;
+    const cartId = req.params._id; // Store the cart ID from params
+
+    // First, check if the cart entry exists
+    const existingCart = await addToCartTable.findById(cartId);
+
+    if (!existingCart) {
+      return res.json({
+        code: 404,
+        message: "Cart not found for the given ID.",
+        data: [],
+        error: true,
+        status: false,
+      });
+    }
+
+    // If the cart entry exists, update it
+    const updatedCart = await addToCartTable.findByIdAndUpdate(
+      cartId, // Find the cart entry by ID
+      { $set: { productId, userId } }, // Update with the entire body (make sure only valid fields are allowed)
+      { new: true } // Return the updated document
+    );
+
+    return res.json({
+      code: 200,
+      message: "Cart updated successfully.",
+      data: updatedCart,
+      error: false,
+      status: true,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.json({
+      code: 500,
+      message: "An internal server error occurred.",
+      error: true,
+      status: false,
+      data: [],
+    });
+  }
+};
+
+
+
+
+const deleteCart = async (req, res) => {
+  try {
+    let data = await addToCartTable.deleteOne({ _id: req.params._id });
+
+    if (data.deletedCount > 0) {
+      res.json({
+        code: 200,
+        message: "Cart Data deleted successfully.",
+        data: {
+          _id: req.params._id,
+        },
+        error: false,
+        status: true,
+      });
+    } else {
+      res.json({
+        code: 404,
+        message: "Cart Data not found.",
+        data: [],
+        error: true,
+        status: false,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.json({
+      code: 500,
+      message: "An internal server error occurred.",
+      error: true,
+      status: false,
+      data: [],
+    });
+  }
+};
+
+const getCart = async (req, res) => {
+  try {
+    const data = await addToCartTable.find();
+
+    if (data.length > 0) {
+      // Use Promise.all to fetch user and product details
+      const cartWithDetails = await Promise.all(
+        data.map(async (cartItem) => {
+          const userDetail = await userTable.findById(cartItem.userId);
+          const productDetail = await ProductTable.findById(cartItem.productId);
+          
+          return {
+            ...cartItem.toObject(), // Convert mongoose document to plain object
+            userDetail,
+            productDetail,
+          };
+        })
+      );
+
+      return res.json({
+        code: 200,
+        message: "Cart Data retrieved successfully.",
+        data: cartWithDetails,
+        error: false,
+        status: true,
+      });
+    } else {
+      return res.json({
+        code: 404,
+        message: "No Cart Data found.",
+        data: [],
+        error: true,
+        status: false,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.json({
+      code: 500,
+      message: "An internal server error occurred.",
+      error: true,
+      status: false,
+      data: [],
+    });
+  }
+};
+
+
+const getSingleCart = async (req, res) => {
+  try {
+    // Find all cart items for the user based on userId from the request params
+    const data = await addToCartTable.find({ userId: req.params._id });
+
+    if (data.length > 0) {
+      // Use Promise.all to fetch user and product details for each cart item
+      const cartWithDetails = await Promise.all(
+        data.map(async (cartItem) => {
+          const userDetail = await userTable.findById(cartItem.userId);
+          const productDetail = await ProductTable.findById(cartItem.productId);
+
+          return {
+            ...cartItem._doc, // Use `_doc` to access the plain document object
+            userDetail,
+            productDetail,
+          };
+        })
+      );
+
+      // Return the combined cart data with user and product details
+      return res.status(200).json({
+        code: 200,
+        message: "Cart data retrieved successfully.",
+        data: cartWithDetails,
+        error: false,
+        status: true,
+      });
+    } else {
+      // No cart data found
+      return res.status(404).json({
+        code: 404,
+        message: "No cart data found.",
+        data: [],
+        error: true,
+        status: false,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    // Handle server errors
+    return res.status(500).json({
+      code: 500,
+      message: "An internal server error occurred.",
+      error: true,
+      status: false,
+      data: [],
+    });
+  }
+};
+
 
   
 
 module.exports={  
+  // aaddTOCard
+  createCart,
+  putCart,
+   getCart, 
+  deleteCart, 
+  getSingleCart, 
   // user...
     loginUser,
   createUser,

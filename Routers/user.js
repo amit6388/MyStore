@@ -7,15 +7,28 @@ const {
   putUser,
    getUser, 
   deleteUser, 
-  getSingleUser 
+  getSingleUser ,
+//Cart
+  createCart,
+  putCart,
+   getCart, 
+  deleteCart, 
+  getSingleCart, 
  } = require('../controllers/user/UserController');
 const img_upload = require('../multer/admin/fileupload') ;
 const { requireSignIn } = require('../middlewares/authMiddleware'); 
+///userCreate
 userRouter.route('/user-login').post(loginUser);
  userRouter.route('/user').post(createUser);
 userRouter.route('/user').get(getUser);
 userRouter.route('/user/:_id').delete(deleteUser);
 userRouter.route('/user/:_id').put(putUser);
 userRouter.route('/user/:_id').get(getSingleUser);
- 
+ //createCart
+ userRouter.route('/add-to-cart').post(createCart);
+ userRouter.route('/add-to-cart').get(getCart);
+ userRouter.route('/add-to-cart/:_id').delete(deleteCart);
+ userRouter.route('/add-to-cart/:_id').put(putCart);
+ userRouter.route('/add-to-cart/:_id').get(getSingleCart);
+
 module.exports = userRouter; 
