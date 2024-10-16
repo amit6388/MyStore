@@ -1,5 +1,4 @@
-const InstructorRegisterSchema = require('../../models/admin/InstructorModel'); 
-const OrderTable = require('../../models/admin/Orders');
+ const OrderTable = require('../../models/admin/Orders');
 
 const createOrder = async (req, res) => {
   try {
@@ -7,7 +6,7 @@ const createOrder = async (req, res) => {
 
     // Validation for missing fields
     if (!userId || !products || !totalPrice || !shippingAddress) {
-      return res.status(400).json({
+      return res.json({
         code: 400,
         message: "Missing required fields.",
         error: true,
@@ -28,7 +27,7 @@ const createOrder = async (req, res) => {
 
     const savedOrder = await newOrder.save();
 
-    return res.status(201).json({
+    return res.json({
       code: 201,
       message: "Order created successfully.",
       error: false,
@@ -37,7 +36,7 @@ const createOrder = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({
+    return res.json({
       code: 500,
       message: "An internal server error occurred.",
       error: true,
@@ -58,7 +57,7 @@ const putOrder = async (req, res) => {
         }, { new: true }); // { new: true } returns the updated order
     
         if (!updatedOrder) {
-          return res.status(404).json({
+          return res.json({
             code: 404,
             message: "Order not found.",
             error: true,
@@ -67,7 +66,7 @@ const putOrder = async (req, res) => {
           });
         }
     
-        return res.status(200).json({
+        return res.json({
           code: 200,
           message: "Order updated successfully.",
           error: false,
@@ -76,7 +75,7 @@ const putOrder = async (req, res) => {
         });
       } catch (err) {
         console.error(err);
-        return res.status(500).json({
+        return res.json({
           code: 500,
           message: "An internal server error occurred.",
           error: true,
@@ -91,7 +90,7 @@ const putOrder = async (req, res) => {
             const deletedOrder = await OrderTable.findByIdAndDelete(req.params.id);
         
             if (!deletedOrder) {
-              return res.status(404).json({
+              return res.json({
                 code: 404,
                 message: "Order not found.",
                 error: true,
@@ -100,7 +99,7 @@ const putOrder = async (req, res) => {
               });
             }
         
-            return res.status(200).json({
+            return res.json({
               code: 200,
               message: "Order deleted successfully.",
               error: false,
@@ -109,7 +108,7 @@ const putOrder = async (req, res) => {
             });
           } catch (err) {
             console.error(err);
-            return res.status(500).json({
+            return res.json({
               code: 500,
               message: "An internal server error occurred.",
               error: true,
@@ -124,7 +123,7 @@ const putOrder = async (req, res) => {
                 const order = await OrderTable.findById(req.params.id).populate('userId').populate('products.productId');
             
                 if (!order) {
-                  return res.status(404).json({
+                  return res.json({
                     code: 404,
                     message: "Order not found.",
                     error: true,
@@ -133,7 +132,7 @@ const putOrder = async (req, res) => {
                   });
                 }
             
-                return res.status(200).json({
+                return res.json({
                   code: 200,
                   message: "Order retrieved successfully.",
                   error: false,
@@ -142,7 +141,7 @@ const putOrder = async (req, res) => {
                 });
               } catch (err) {
                 console.error(err);
-                return res.status(500).json({
+                return res.json({
                   code: 500,
                   message: "An internal server error occurred.",
                   error: true,
@@ -159,7 +158,7 @@ const putOrder = async (req, res) => {
                 //block for single user status 
             
                 if (!order) {
-                  return res.status(404).json({
+                  return res.json({
                     code: 404,
                     message: "Order not found.",
                     error: true,
@@ -168,7 +167,7 @@ const putOrder = async (req, res) => {
                   });
                 }
             
-                return res.status(200).json({
+                return res.json({
                   code: 200,
                   message: "Order retrieved successfully.",
                   error: false,
@@ -177,7 +176,7 @@ const putOrder = async (req, res) => {
                 });
               } catch (err) {
                 console.error(err);
-                return res.status(500).json({
+                return res.json({
                   code: 500,
                   message: "An internal server error occurred.",
                   error: true,
@@ -202,7 +201,7 @@ module.exports = {
 
 //     // Validation for missing fields
 //     if (!userId || !products || !totalPrice || !shippingAddress) {
-//       return res.status(400).json({
+//       return res.json({
 //         code: 400,
 //         message: "Missing required fields.",
 //         error: true,
