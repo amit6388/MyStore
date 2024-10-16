@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
 const addToCartSchema = new mongoose.Schema({
     productId: {
-        type: String,
-        
+        type: String, 
       },
       userId: {
-        type: String,
-       
-      },
-       
+        type: String, 
+      }, 
       createAt: {
         type: Date,
         default: Date.now // Corrected to call `Date.now` as a function reference
