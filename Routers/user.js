@@ -30,5 +30,7 @@ userRouter.route('/user/:_id').get(getSingleUser);
  userRouter.route('/add-to-cart/:_id').delete(deleteCart);
  userRouter.route('/add-to-cart/:_id').put(putCart);
  userRouter.route('/add-to-cart/:_id').get(getSingleCart);
+//order Route
+userRouter.route('/order').post(createCart);
 
 module.exports = userRouter; 
