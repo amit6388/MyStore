@@ -261,7 +261,7 @@ const createCart = async (req, res) => {
 
     // Basic validation for missing fields
     if (!productId || !userId) {
-      return res.status(400).json({
+      return res.json({
         code: 400,
         message: "Missing required fields: productId or userId.",
         error: true,
@@ -275,9 +275,9 @@ const createCart = async (req, res) => {
 
     if (existingCart) {
       // If the entry already exists, send a conflict response
-      return res.status(409).json({
+      return res.json({
         code: 409,
-        message: "Cart entry already exists for this user and product.",
+        message: "Product is  already exists in your cart.",
         error: true,
         status: false,
         data: [],
@@ -290,7 +290,7 @@ const createCart = async (req, res) => {
       console.log("Cart saved successfully");
 
       // Success response
-      return res.status(201).json({
+      return res.json({
         code: 201,
         message: "Cart created successfully.",
         error: false,
@@ -302,7 +302,7 @@ const createCart = async (req, res) => {
     console.error(err);
 
     // Handle unexpected errors
-    return res.status(500).json({
+    return res.json({
       code: 500,
       message: "An internal server error occurred.",
       error: true,
@@ -455,27 +455,46 @@ const getSingleCart = async (req, res) => {
       const cartWithDetails = await Promise.all(
         data.map(async (cartItem) => {
           const userDetail = await userTable.findById(cartItem.userId);
-          const productDetail = await ProductTable.findById(cartItem.productId);
+          const productDetail = await ProductTable.findById({_id: cartItem?.productId});
 
-          return {
-            ...cartItem._doc, // Use `_doc` to access the plain document object
-            userDetail,
-            productDetail,
-          };
+          // Only include the cart item if both userDetail and productDetail are found
+          if (userDetail && productDetail) {
+            return {
+              ...cartItem._doc, // Use `_doc` to access the plain document object
+              userDetail,
+              productDetail,
+            };
+          } else {
+            return null; // Exclude cart items where productDetail is missing
+          }
         })
       );
 
-      // Return the combined cart data with user and product details
-      return res.status(200).json({
-        code: 200,
-        message: "Cart data retrieved successfully.",
-        data: cartWithDetails,
-        error: false,
-        status: true,
-      });
+      // Filter out any null values (cart items without matching productDetail)
+      const validCartItems = cartWithDetails.filter(item => item !== null);
+
+      if (validCartItems.length > 0) {
+        // Return the combined cart data with user and product details
+        return res.json({
+          code: 200,
+          message: "Cart data retrieved successfully.",
+          data: validCartItems,
+          error: false,
+          status: true,
+        });
+      } else {
+        // No valid cart data found
+        return res.json({
+          code: 404,
+          message: "No valid cart data found.",
+          data: [],
+          error: true,
+          status: false,
+        });
+      }
     } else {
       // No cart data found
-      return res.status(404).json({
+      return res.json({
         code: 404,
         message: "No cart data found.",
         data: [],
@@ -486,7 +505,7 @@ const getSingleCart = async (req, res) => {
   } catch (err) {
     console.error(err);
     // Handle server errors
-    return res.status(500).json({
+    return res.json({
       code: 500,
       message: "An internal server error occurred.",
       error: true,
@@ -495,6 +514,7 @@ const getSingleCart = async (req, res) => {
     });
   }
 };
+
 
 
 

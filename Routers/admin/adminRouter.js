@@ -19,7 +19,8 @@ const {
   putOrder,
   deleteOder,
   getOrders,
-  getOrderByUserId
+  getOrderByUserId,
+  updateOrderStatus
  }=require('../../controllers/admin/oderController')
 const img_upload = require('../../multer/admin/fileupload') ;
 const { requireSignIn } = require('../../middlewares/authMiddleware'); 
@@ -40,8 +41,9 @@ Router.get('/add-product', getProduct);
 Router.post('/order',   createOrder); 
 Router.put('/order/:_id', putOrder); //spectific id 
 Router.delete('/order/:_id', deleteOder); 
-Router.get('/order/:_id',  getOrderByUserId); //single user by id
+Router.get('/order/:userId',  getOrderByUserId); //single user by id
 Router.get('/order', getOrders);
+Router.put('/update-status/:orderId',updateOrderStatus)
 
 
 module.exports = Router; 

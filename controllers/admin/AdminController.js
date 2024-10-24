@@ -155,7 +155,7 @@ const createProduct = async (req, res) => {
       const img = req.files?.img;
   
       if (!name || !price || !dose  ) {
-          return res.status(400).json({
+          return res.json({
               code: 400,
               message: "Missing required fields: name, price, dose, or img.",
               error: true,
@@ -167,7 +167,7 @@ const createProduct = async (req, res) => {
       // Check if a product with the same name already exists
       const existingProduct = await ProductTable.findOne({ name });
       if (existingProduct) {
-          return res.status(409).json({
+          return res.json({
               code: 409,
               message: "Product already exists with this name.",
               error: true,
@@ -192,7 +192,7 @@ const createProduct = async (req, res) => {
       await data.save();
 
       // Success response
-      return res.status(201).json({
+      return res.json({
           code: 201,
           message: "Product created successfully.",
           error: false,
@@ -202,7 +202,7 @@ const createProduct = async (req, res) => {
 
   } catch (err) {
       console.error(err);
-      return res.status(500).json({
+      return res.json({
           code: 500,
           message: "An internal server error occurred.",
           error: true,
@@ -217,55 +217,32 @@ const putProduct = async (req, res) => {
       const { name, price, dose, discount, outofstock, pills } = req.body;
       const img = req.files?.img; // Access the uploaded file using req.files
 
-      // Ensure img is required for updating product, but allow for updates without img
-      if (!img) {
-          return res.status(400).json({
-              code: 400,
-              message: "Missing required field: img.",
-              error: true,
-              status: false,
-              data: [],
-          });
-      }
+    
+   
 
-      // Call the uploadFile function
-      const uploadedFileName = await uploadFile(img); // Upload file and get the filename
+      // If an image is provided, upload it and set the img field
+     
+          // Call the uploadFile function
+          const uploadedFileName = await uploadFile(img); // Upload file and get the filename
+         // Add img to updateFields
+      
 
       // Update product details
-      let data = await ProductTable.updateOne(
+      const data = await ProductTable.updateOne(
           { _id: req.params._id },
-          { $set: { name, price, dose, discount, outofstock, pills, img: uploadedFileName } }
-      );
-
-      if (data.modifiedCount > 0) {
-          res.status(200).json({
+          { $set: {name, price, dose, discount, outofstock, pills ,img:uploadedFileName} }
+      ); 
+          res.json({
               code: 200,
-              message: "Product details updated successfully.",
-              data: {
-                  _id: req.params._id,
-                  name,
-                  price,
-                  dose,
-                  discount,
-                  outofstock,
-                  pills,
-                  img: uploadedFileName, // Return the sanitized file name
-              },
+              message: "Product details updated successfully.", 
               error: false,
               status: true,
           });
-      } else {
-          res.status(404).json({
-              code: 404,
-              message: "Product not found or no changes made.",
-              data: [],
-              error: true,
-              status: false,
-          });
-      }
+      
+     
   } catch (err) {
-      console.log(err);
-      return res.status(500).json({
+      console.error(err); // Use console.error for error logging
+      return res.json({
           code: 500,
           message: "An internal server error occurred.",
           error: true,
@@ -274,6 +251,7 @@ const putProduct = async (req, res) => {
       });
   }
 };
+
 
 const deleteProduct = async (req, res) => {
   try {
@@ -311,7 +289,7 @@ const deleteProduct = async (req, res) => {
 }; 
 const getProduct = async (req, res) => {
   try {
-    let data = await ProductTable.find();
+    let data = await ProductTable.find().sort({createAt:-1});
 
     if (data.length > 0) {
       res.json({

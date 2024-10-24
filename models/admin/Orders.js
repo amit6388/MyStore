@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId, //USER ID FOr the userId 
-        ref: 'User',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users', // Updated to 'users'
         required: true
     },
     products: [
         {
             productId: {
-                type: mongoose.Schema.Types.ObjectId,  //REFERENCE IN  productId WITH THE  pRODUCT COLLECTION
-                ref: 'Product',
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Products', // Ensure this is correct as well
                 required: true
             },
             quantity: {
@@ -30,8 +30,8 @@ const orderSchema = new mongoose.Schema({
     },
     orderStatus: {
         type: String,
-        enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
-        default: 'pending'
+        enum: [ 'confirmed', 'shipped', 'delivered', 'cancelled'],
+        default: 'confirmed'
     },
     paymentStatus: {
         type: String,

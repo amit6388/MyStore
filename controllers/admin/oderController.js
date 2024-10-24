@@ -120,7 +120,7 @@ const putOrder = async (req, res) => {
 
         const getOrders=  async (req, res) => {
               try {
-                const order = await OrderTable.findById(req.params.id).populate('userId').populate('products.productId');
+                const order = await OrderTable.find().populate('userId').populate('products.productId');
             
                 if (!order) {
                   return res.json({
@@ -154,8 +154,7 @@ const putOrder = async (req, res) => {
 
             const getOrderByUserId=  async (req, res) => {
               try {
-                const order = await OrderTable.findById({userId:req.params.id}).populate('userId').populate('products.productId');
-                //block for single user status 
+                const order = await OrderTable.find({userId:req.params.userId}).populate('userId').populate('products.productId');
             
                 if (!order) {
                   return res.json({
@@ -186,8 +185,70 @@ const putOrder = async (req, res) => {
               }
             };
 
+            const updateOrderStatus = async (req, res) => {
+              const { orderId } = req.params;
+              const { orderStatus, paymentStatus } = req.body;
+            
+              try {
+                // Validate inputs (ensure at least one of the two fields is provided)
+                if (!orderStatus && !paymentStatus) {
+                  return res.json({
+                    code: 400,
+                    message: "At least one of orderStatus or paymentStatus is required.",
+                    error: true,
+                    status: false,
+                    data: []
+                  });
+                }
+            
+                // Prepare the update object
+                let updateData = {};
+                if (orderStatus) updateData.orderStatus = orderStatus;
+                if (paymentStatus) updateData.paymentStatus = paymentStatus;
+                updateData.updatedAt = Date.now(); // update `updatedAt` timestamp
+            
+                // Find the order by ID and update
+                const updatedOrder = await OrderTable.findByIdAndUpdate(
+                  orderId,
+                  { $set: updateData },
+                  { new: true } // Return the updated document
+                );
+            
+                // Check if order was found and updated
+                if (!updatedOrder) {
+                  return res.json({
+                    code: 404,
+                    message: "Order not found.",
+                    error: true,
+                    status: false,
+                    data: []
+                  });
+                }
+            
+                // Send the updated order as the response
+                return res.json({
+                  code: 200,
+                  message: "Order updated successfully.",
+                  error: false,
+                  status: true,
+                  data: updatedOrder
+                });
+              } catch (err) {
+                console.error(err);
+                return res.json({
+                  code: 500,
+                  message: "An internal server error occurred.",
+                  error: true,
+                  status: false,
+                  data: []
+                });
+              }
+            };
+            
+
 module.exports = {
   createOrder,
+  updateOrderStatus,
   putOrder,
   deleteOder,
   getOrders,
@@ -222,7 +283,7 @@ module.exports = {
 
 //     const savedOrder = await newOrder.save();
 
-//     return res.status(201).json({
+//     return res.json({
 //       code: 201,
 //       message: "Order created successfully.",
 //       error: false,
