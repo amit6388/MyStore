@@ -1,0 +1,64 @@
+[{
+  "_id": {
+    "$oid": "670f872d2bebe129ef1c3b0a"
+  },
+  "name": "user",
+  "email": "user@gmail.com",
+  "contact": 6388246712,
+  "password": "12345",
+  "createAt": {
+    "$date": "2024-10-16T09:28:13.080Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-16T09:28:13.081Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67152c014ab0908d7f67569a"
+  },
+  "name": "Sumit Singh",
+  "email": "r@gmail.com",
+  "contact": 6388246721,
+  "password": "12345",
+  "createAt": {
+    "$date": "2024-10-20T16:12:49.450Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-20T16:12:49.450Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67152c464ab0908d7f67569e"
+  },
+  "name": "Sumit Singh",
+  "email": "r1@gmail.com",
+  "contact": 6388246731,
+  "password": "12345",
+  "createAt": {
+    "$date": "2024-10-20T16:13:58.564Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-20T16:13:58.564Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67152d604ab0908d7f6756a5"
+  },
+  "name": "Amit Singh2",
+  "email": "s1@gmail.com",
+  "contact": 638824546,
+  "password": "12345",
+  "createAt": {
+    "$date": "2024-10-20T16:18:40.680Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-20T16:18:40.680Z"
+  },
+  "__v": 0
+}]

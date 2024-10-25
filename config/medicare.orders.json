@@ -1,0 +1,104 @@
+[{
+  "_id": {
+    "$oid": "6716f6d83d2f9c1bc90e4ee5"
+  },
+  "userId": {
+    "$oid": "670f872d2bebe129ef1c3b0a"
+  },
+  "products": [
+    {
+      "productId": {
+        "$oid": "6714e0054ab0908d7f67562d"
+      },
+      "quantity": 1,
+      "price": 30,
+      "_id": {
+        "$oid": "6716f6d83d2f9c1bc90e4ee6"
+      }
+    },
+    {
+      "productId": {
+        "$oid": "6714d41edecd15dcf647679f"
+      },
+      "quantity": 1,
+      "price": 200,
+      "_id": {
+        "$oid": "6716f6d83d2f9c1bc90e4ee7"
+      }
+    }
+  ],
+  "totalPrice": 160.19999999999996,
+  "orderStatus": "confirmed",
+  "paymentStatus": "pending",
+  "shippingAddress": {
+    "street": "lmp",
+    "city": "lmp",
+    "state": "Uttar Pradesh",
+    "zipCode": "261506",
+    "country": "India"
+  },
+  "createdAt": {
+    "$date": "2024-10-22T00:50:32.783Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-24T03:52:09.611Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "671705973d2f9c1bc90e4fd4"
+  },
+  "userId": {
+    "$oid": "670f872d2bebe129ef1c3b0a"
+  },
+  "products": [
+    {
+      "productId": {
+        "$oid": "6714e0684ab0908d7f675634"
+      },
+      "quantity": 4,
+      "price": 200,
+      "_id": {
+        "$oid": "671705973d2f9c1bc90e4fd5"
+      }
+    },
+    {
+      "productId": {
+        "$oid": "6714e0054ab0908d7f67562d"
+      },
+      "quantity": 2,
+      "price": 30,
+      "_id": {
+        "$oid": "671705973d2f9c1bc90e4fd6"
+      }
+    },
+    {
+      "productId": {
+        "$oid": "6714d41edecd15dcf647679f"
+      },
+      "quantity": 3,
+      "price": 200,
+      "_id": {
+        "$oid": "671705973d2f9c1bc90e4fd7"
+      }
+    }
+  ],
+  "totalPrice": 996.3999999999999,
+  "orderStatus": "confirmed",
+  "paymentStatus": "pending",
+  "shippingAddress": {
+    "street": "lucknow",
+    "city": "lucknow",
+    "state": "Uttar Pradesh",
+    "zipCode": "226022",
+    "country": "India"
+  },
+  "createdAt": {
+    "$date": "2024-10-22T01:53:27.514Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-24T03:40:00.785Z"
+  },
+  "__v": 0
+}]
